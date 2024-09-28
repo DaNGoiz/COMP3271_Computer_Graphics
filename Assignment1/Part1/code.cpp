@@ -73,9 +73,11 @@ void DrawTriangles() {
     // Remember to set current gl color from the color_array.
     // If the number of triangles exceeds the length of the color list, you can start iterating the color list from the beginning again.
     glBegin(GL_TRIANGLES);
-        for(int i = 0; i < triangles.size(); i++) {
-            glColor3d(color_array[triangles[i].color_index][0], color_array[triangles[i].color_index][1], color_array[triangles[i].color_index][2]);
-            for(int j = 0; j < 3; j++) {
+        for (int i = 0; i < triangles.size(); i++) {
+            int color_index = triangles[i].color_index % 11;
+            glColor3d(color_array[color_index][0], color_array[color_index][1], color_array[color_index][2]);
+
+            for (int j = 0; j < 3; j++) {
                 glVertex2d(triangles[i].vertices[j][0], triangles[i].vertices[j][1]);
             }
         }
@@ -98,6 +100,7 @@ void MouseInteraction(double m_x, double m_y) {
     point_count++;
     
     if(point_count == 3) {
+        triangle_to_draw.color_index = rand() % 11;
         triangles.push_back(triangle_to_draw);
         point_count = 0;
     }
