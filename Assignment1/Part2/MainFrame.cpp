@@ -32,23 +32,25 @@ void MainFrame::LeftMouseMove(float start_x, float start_y, float curr_x, float 
         // ---------------------------------- Object Rotation ---------------------------------------
         // TODO 2: Add your code here.
         // Find the correct 4x4 transform matrix "transform_mat" to rotate the object about its center.
-
+    
         glm::mat4x4 transform_mat(1.f);
 
         // 1. find V on the screen
-        // V = (curr_x, curr_y) - (start_x, start_y)
+        glm::vec2 V = glm::vec2(curr_x - start_x, curr_y - start_y);
         // 2. rotate V to A by 90 degrees
-        // A = ?
+        glm::vec2 A = glm::vec2(-V.y, V.x);
         // 3. find the rotation axis in the *world space*
-        // glm::vec3 rot_axis = ?
+        glm::vec3 rot_axis = glm::vec3(A.x, A.y, 0.f);
+        rot_axis = glm::normalize(rot_axis);
         // 4. find the rotation angle k * ||A||, assign a proper value to k
-        // float rot_angle = ?
+        float k = 1.0f;
+        float rot_angle = k * glm::length(A);
         // 5. find the rotation matrix
-        // glm::mat4x4 rot_mat = glm::rotate(glm::mat4x4(1.f), rot_angle, rot_axis);
+        glm::mat4x4 rot_mat = glm::rotate(glm::mat4x4(1.f), rot_angle, rot_axis);
         // 6. find the translation matrix
-        // glm::mat4x4 trans_mat = ?
+        glm::mat4x4 trans_mat = glm::translate(glm::mat4x4(1.f), mesh_.center_);
         // 7. find the final transformation matrix
-        // transform_mat = ?
+        // glm::mat4x4 transform_mat = trans_mat * rot_mat; // bug here
 
 
         mesh_.ApplyTransform(transform_mat);
@@ -75,7 +77,7 @@ void MainFrame::LeftMouseMove(float start_x, float start_y, float curr_x, float 
         glm::vec3 a = Screen2World(start_x, start_y, z_vals);
         glm::vec3 b = Screen2World(curr_x, curr_y, z_vals);
         // 5. find the translation matrix
-        // transform_mat = glm::translate(glm::mat4x4(1.f), ?);
+        transform_mat = glm::translate(glm::mat4x4(1.f), b-a);
 
         mesh_.ApplyTransform(transform_mat);
     } else if (modeling_state_ == OBJ_EXTRUDE) {
